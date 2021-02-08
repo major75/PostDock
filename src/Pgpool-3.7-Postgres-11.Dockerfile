@@ -2,7 +2,7 @@
 ##                         AUTO-GENERATED FILE                          ##
 ##########################################################################
 
-FROM debian:stretch
+FROM ubuntu:focal
 ARG DOCKERIZE_VERSION=v0.2.0
 
 RUN groupadd -r postgres --gid=999 && useradd -r -g postgres -d /home/postgres  --uid=999 postgres
@@ -17,15 +17,12 @@ COPY ./dockerfile/bin /usr/local/bin/dockerfile
 RUN chmod -R +x /usr/local/bin/dockerfile && ln -s /usr/local/bin/dockerfile/functions/* /usr/local/bin/
 
 RUN  wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key add - && \
-     sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" >> /etc/apt/sources.list.d/pgdg.list' && \
+     sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" >> /etc/apt/sources.list.d/pgdg.list' && \
      apt-get update
 
 RUN  apt-get install -y postgresql-client-11
 
-
-RUN install_deb_pkg "http://launchpadlibrarian.net/160156688/libmemcached10_1.0.8-1ubuntu2_amd64.deb" "libmemcached10"
-RUN install_deb_pkg "http://security-cdn.debian.org/debian-security/pool/updates/main/o/openssl/libssl1.0.0_1.0.1t-1+deb8u12_amd64.deb" "libssl1.0.0"
-RUN install_deb_pkg "http://ftp.us.debian.org/debian/pool/main/p/pgpool2/libpgpool-dev_4.1.4-2_amd64.deb" "libpgpool0"
+RUN install_deb_pkg "http://ftp.us.debian.org/debian/pool/main/p/pgpool2/libpgpool0_4.1.4-2_amd64.deb" "libpgpool0"
 RUN install_deb_pkg "http://ftp.us.debian.org/debian/pool/main/p/pgpool2/pgpool2_4.1.4-2_amd64.deb" "pgpool2"
 
 RUN  wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
