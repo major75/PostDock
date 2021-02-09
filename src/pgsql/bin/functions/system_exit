@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+echo ">>> Executing system exit"
 TRIES="$STOPPING_TIMEOUT"
 if [ -f "$STOPPING_LOCK_FILE" ]; then
     ROSTGRES_STOPPING_PID=`head -1 $STOPPING_LOCK_FILE`

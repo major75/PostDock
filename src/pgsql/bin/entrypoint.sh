@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
+echo "                         "
+echo "                         "
+echo ">>> Starting container..."
+
+echo ">>>> Creating lock file"
+echo "Created by PostgreSQL cluster $CLUSTER_NAME" > /var/run/recovery.lock
+
 echo ">>> Setting up STOP handlers..."
 for f in TERM SIGTERM QUIT SIGQUIT INT SIGINT KILL SIGKILL; do
     trap "system_stop $f" "$f"
@@ -14,6 +21,10 @@ echo '>>> STARTING POSTGRES...'
 
 EXIT_CODE=$?
 echo ">>> Foreground processes returned code: '$EXIT_CODE'"
+
+# while true; do
+#     sleep 1;
+# done;
 
 while [ -f /var/run/recovery.lock ]; do
     sleep 1;
