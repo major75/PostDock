@@ -20,7 +20,7 @@ RUN  wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key a
      sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt/ focal-pgdg main" >> /etc/apt/sources.list.d/pgdg.list' && \
      apt-get update
 
-RUN  apt-get install -y postgresql-client-11
+RUN  apt-get install -y postgresql-client-11 postgresql-common libmemcached11
 
 RUN install_deb_pkg "http://ftp.us.debian.org/debian/pool/main/p/pgpool2/libpgpool0_4.1.4-2_amd64.deb" "libpgpool0"
 RUN install_deb_pkg "http://ftp.us.debian.org/debian/pool/main/p/pgpool2/pgpool2_4.1.4-2_amd64.deb" "pgpool2"
