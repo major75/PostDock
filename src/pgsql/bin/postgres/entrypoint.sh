@@ -48,9 +48,11 @@ source /usr/local/bin/cluster/repmgr/configure.sh
 
 echo ">>> Sending in background postgres start..."
 if [[ "$CURRENT_REPLICATION_PRIMARY_HOST" == "" ]]; then
+    echo ">>>> Starting postgres as if primary node"
     cp -f /usr/local/bin/cluster/postgres/primary/entrypoint.sh /docker-entrypoint-initdb.d/
     /docker-entrypoint.sh postgres &
 else
+    echo ">>>> Starting postgres as if stanby node"
     /usr/local/bin/cluster/postgres/standby/entrypoint.sh
 fi
 
