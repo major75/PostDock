@@ -39,7 +39,7 @@ spec:
             - name: "CLUSTER_NODE_NETWORK_NAME"
               value: "mysystem-db-node1-service"
             - name: "CONFIGS"
-              value: "wal_keep_segments:250,shared_buffers:300MB,archive_command:'/bin/true'"
+              value: "wal_keep_size:16,shared_buffers:300MB,archive_command:'/bin/true'"
 
             # Work DB
             - name: "POSTGRES_DB"

@@ -21,7 +21,7 @@ else
     do_rewind
 fi
 
-rm -f $MASTER_ROLE_LOCK_FILE_NAME # that file should not be here anyways
+rm -f $MASTER_ROLE_LOCK_FILE_NAME # that file should not be here anyway
 
 postgres_configure
 

@@ -2,7 +2,7 @@
 ##                         AUTO-GENERATED FILE                          ##
 ##########################################################################
 
-FROM golang:1.11-stretch
+FROM golang:buster
 
 # grab gosu for easy step-down from root
 ARG GOSU_VERSION=1.11
@@ -18,7 +18,7 @@ RUN  wget -q https://www.postgresql.org/media/keys/ACCC4CF8.asc -O - | apt-key a
      apt-get update && \
      apt-get install -y libffi-dev libssl-dev openssh-server
 
-RUN  apt-get install -y postgresql-client-11
+RUN  apt-get install -y postgresql-client-13
 
 
 RUN install_deb_pkg "http://atalia.postgresql.org/morgue/barman_2.11-1.pgdg90%2B1_all.deb"
