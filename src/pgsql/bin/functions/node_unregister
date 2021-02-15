@@ -10,10 +10,13 @@ echo ">>>> This node id: $THIS_NODE_ID"
 THIS_NODE_ROLE=$(gosu postgres repmgr node status --csv | awk -F, '$1=="\"Role\"" { print $2; }')
 echo ">>>> This node role: $THIS_NODE_ROLE"
 
-if [[ "$THIS_NODE_ROLE" == "\"standby\""]]; then 
+ROLE_STANDBY=$(echo '"standby"')
+ROLE_PRIMARY=$(echo '"primary"')
+
+if [[ "$THIS_NODE_ROLE" == "$ROLE_STANDBY" ]]; then 
     echo ">>> Unregister node as stanby"
     gosu postgres repmgr standby unregister --force --node-id $THIS_NODE_ID --verbose
-elif [[ "$THIS_NODE_ROLE" == "\"primary\""]]; then 
+elif [[ "$THIS_NODE_ROLE" == "$ROLE_PRIMARY" ]]; then 
     echo ">>> Unregister node as primary"
     gosu postgres repmgr primary unregister --force --node-id $THIS_NODE_ID --verbose
 fi
