@@ -2,4 +2,31 @@
 
 echo ">>> Unregister the node if it was done before"
 
-PGCONNECT_TIMEOUT=$CHECK_PGCONNECT_TIMEOUT PGPASSWORD=$REPLICATION_PASSWORD  psql -h $CURRENT_REPLICATION_PRIMARY_HOST -U $REPLICATION_USER -p $REPLICATION_PRIMARY_PORT  $REPLICATION_DB -c "DELETE FROM $(get_repmgr_schema).$REPMGR_NODES_TABLE WHERE conninfo LIKE '%host=$CLUSTER_NODE_NETWORK_NAME%'"
+echo ">>>> Current primary host: $CURRENT_REPLICATION_PRIMARY_HOST"
+
+THIS_NODE_ID=$(source /etc/repmgr.conf; echo $node_id)
+echo ">>>> This node id: $THIS_NODE_ID"
+
+THIS_NODE_ROLE=$(gosu postgres repmgr node status --csv | awk -F, '$1=="\"Role\"" { print $2; }')
+echo ">>>> This node role: $THIS_NODE_ROLE"
+
+if [[ "$THIS_NODE_ROLE" == "\"standby\""]]; then 
+    echo ">>> Unregister node as stanby"
+    gosu postgres repmgr standby unregister --force --node-id $THIS_NODE_ID --verbose
+elif [[ "$THIS_NODE_ROLE" == "\"primary\""]]; then 
+    echo ">>> Unregister node as primary"
+    gosu postgres repmgr primary unregister --force --node-id $THIS_NODE_ID --verbose
+fi
+
+echo ">>>>> Stop server"
+gosu postgres pg_ctl stop
+
+do_master_clone
+
+echo ">>>>> Start server"
+gosu postgres pg_ctl start
+
+echo ">>>> Waiting for local postgres server start..."
+wait_db_schema $CLUSTER_NODE_NETWORK_NAME $REPLICATION_PRIMARY_PORT $REPLICATION_USER $REPLICATION_PASSWORD $REPLICATION_DB public $REPMGR_WAIT_POSTGRES_START_TIMEOUT
+
+# PGCONNECT_TIMEOUT=$CHECK_PGCONNECT_TIMEOUT PGPASSWORD=$REPLICATION_PASSWORD  psql -h $CURRENT_REPLICATION_PRIMARY_HOST -U $REPLICATION_USER -p $REPLICATION_PRIMARY_PORT  $REPLICATION_DB -c "DELETE FROM $(get_repmgr_schema).$REPMGR_NODES_TABLE WHERE conninfo LIKE '%host=$CLUSTER_NODE_NETWORK_NAME%'"
